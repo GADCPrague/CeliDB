@@ -27,8 +27,8 @@ public class Main extends TabActivity {
 	    tabHost.addTab(spec);
 
 	    // Do the same for the other tabs
-	    intent = new Intent().setClass(this, CategoryListActivity.class);
-	    spec = tabHost.newTabSpec("albums").setIndicator("Kategorie",
+	    intent = new Intent().setClass(this, CategoriesActivityGroup.class);
+	    spec = tabHost.newTabSpec("categories").setIndicator("Kategorie",
 	                      res.getDrawable(R.drawable.ic_tab_artists))
 	                  .setContent(intent);
 	    tabHost.addTab(spec);
@@ -39,6 +39,6 @@ public class Main extends TabActivity {
 	                  .setContent(intent);
 	    tabHost.addTab(spec);
 
-	    tabHost.setCurrentTab(2);
+	    tabHost.setCurrentTab(0);
 	}
 }

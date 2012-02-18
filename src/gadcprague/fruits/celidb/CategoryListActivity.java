@@ -39,11 +39,25 @@ public class CategoryListActivity extends Activity {
         		if (inRootCategory) {
 	        		Intent myIntent = new Intent(view.getContext(), CategoryListActivity.class);
 	        		myIntent.putExtra("categoryId", position);
-	        		startActivity(myIntent);
+
+	        		// Create the view using Group's LocalActivityManager
+	        		View groupView = CategoriesActivityGroup.group.getLocalActivityManager()
+	        				.startActivity("detail", myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+	        				.getDecorView();
+
+	        		// Again, replace the view
+	        		CategoriesActivityGroup.group.replaceView(groupView);
         		} else {
 	        		Intent myIntent = new Intent(view.getContext(), ProductDetailActivity.class);
 	        		myIntent.putExtra("productId", 999);
-	        		startActivity(myIntent);
+
+	        		// Create the view using Group's LocalActivityManager
+	        		View groupView = CategoriesActivityGroup.group.getLocalActivityManager()
+	        				.startActivity("detail", myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+	        				.getDecorView();
+
+	        		// Again, replace the view
+	        		CategoriesActivityGroup.group.replaceView(groupView);
         		}
         	}
         });
@@ -53,7 +67,7 @@ public class CategoryListActivity extends Activity {
     private void populateCategoriesList() {
     	String[] values = new String[] { "Pečivo", "Mléčné výrobky" };
 
-    	// First paramenter - Context
+    	// First parameter - Context
     	// Second parameter - Layout for the row
     	// Third parameter - ID of the View to which the data is written
     	// Forth - the Array of data
