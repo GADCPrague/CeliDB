@@ -1,5 +1,9 @@
 Popis JSON zdrojù
 
+user: celidb
+password: 6VnLDuLeZ6seCx4n
+
+
 
 Základní URL
 http://vps.kemza.com/hackaton
