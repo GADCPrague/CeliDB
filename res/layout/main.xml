@@ -8,59 +8,11 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/labelCategories" />
+    
+    <ListView android:layout_width="match_parent"
+              android:id="@+id/categoriesList"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"/>
 
-	<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:layout_width="fill_parent"
-	    android:layout_height="fill_parent"
-	    android:stretchColumns="1">
 	
-	    <View
-	        android:layout_height="2dip"
-	        android:background="#FF909090" />
-	    
-	    
-	    <TableRow>
-	        <TextView
-	            android:layout_column="1"
-	            android:text="Pečivo"
-	            android:padding="3dip" />
-	        <TextView
-	            android:text=">"
-	            android:gravity="right"
-	            android:padding="3dip" />
-	    </TableRow>
-	
-	    <View
-	        android:layout_height="2dip"
-	        android:background="#FF909090" />
-	    
-	    <TableRow>
-	        <TextView
-	            android:layout_column="1"
-	            android:text="Mléčné výrobky"
-	            android:padding="3dip" />
-	        <TextView
-	            android:text=">"
-	            android:gravity="right"
-	            android:padding="3dip" />
-	    </TableRow>
-	
-	    <View
-	        android:layout_height="2dip"
-	        android:background="#FF909090" />
-	
-	    <TableRow>
-	        <TextView
-	            android:text="X"
-	            android:padding="3dip" />
-	        <TextView
-	            android:text="Export..."
-	            android:padding="3dip" />
-	        <TextView
-	            android:text="Ctrl-E"
-	            android:gravity="right"
-	            android:padding="3dip" />
-	    </TableRow>
-	</TableLayout>
-
 </LinearLayout>
