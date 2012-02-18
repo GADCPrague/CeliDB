@@ -19,7 +19,7 @@ public class Main extends TabActivity {
 
 	    // Create an Intent to launch an Activity for the tab (to be reused)
 	    // and Initialize a TabSpec for each tab and add it to the TabHost
-	    intent = new Intent().setClass(this, CategoriesActivityGroup.class);
+	    intent = new Intent().setClass(this, SearchActivityGroup.class);
 	    spec = tabHost.newTabSpec("artists").setIndicator("Vyhledat",
 	                      res.getDrawable(R.drawable.ic_tab_artists))
 	                  .setContent(intent);
@@ -32,7 +32,7 @@ public class Main extends TabActivity {
 	                  .setContent(intent);
 	    tabHost.addTab(spec);
 
-	    intent = new Intent().setClass(this, CategoriesActivityGroup.class);
+	    intent = new Intent().setClass(this, UploadActivityGroup.class);
 	    spec = tabHost.newTabSpec("songs").setIndicator("Ukl‡dat",
 	                      res.getDrawable(R.drawable.ic_tab_artists))
 	                  .setContent(intent);

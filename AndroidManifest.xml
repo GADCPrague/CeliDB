@@ -18,9 +18,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <activity android:name=".SearchActivityGroup"></activity>
         <activity android:name=".CategoriesActivityGroup"></activity>
+        <activity android:name=".UploadActivityGroup"></activity>
+        
+        <activity android:name=".SearchActivity"></activity>
+        
         <activity android:name=".CategoryListActivity"></activity>
         <activity android:name=".ProductDetailActivity"></activity>
+        
+        <activity android:name=".UploadActivity"></activity>
     </application>
 
 </manifest>

@@ -6,10 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-public class CategoriesActivityGroup extends ActivityGroup {
+public class SearchActivityGroup extends ActivityGroup {
 
 	// Keep this in a static variable to make it accessible for all the nested activities, lets them manipulate the view
-	public static CategoriesActivityGroup group;
+	public static SearchActivityGroup group;
 
 	// Need to keep track of the history if you want the back-button to work properly, don't use this if your activities requires a lot of memory.
 	private ArrayList<View> history;
@@ -21,8 +21,8 @@ public class CategoriesActivityGroup extends ActivityGroup {
 	      group = this;
 
 	      // Start the root activity within the group and get its view
-	      View view = getLocalActivityManager().startActivity("CategoryListActivity",
-	    		  new Intent(this, CategoryListActivity.class)
+	      View view = getLocalActivityManager().startActivity("UploadActivity",
+	    		  new Intent(this, SearchActivity.class)
 	      				.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
 	      				.getDecorView();
 
