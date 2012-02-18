@@ -2,6 +2,7 @@
 <resources>
 
     <string name="labelCategories">Kategorie</string>
+    <string name="labelDetail">Detail Produktu</string>
     <string name="app_name">CeliDB</string>
 
 </resources>

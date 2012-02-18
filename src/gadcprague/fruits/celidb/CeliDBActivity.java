@@ -1,9 +1,14 @@
 package gadcprague.fruits.celidb;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class CeliDBActivity extends Activity {
 	
@@ -19,8 +24,16 @@ public class CeliDBActivity extends Activity {
         
         // Populate the contact list
         populateCategoriesList();
+        
+        mCategoriesList.setOnItemClickListener(new OnItemClickListener() {
+        	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        		Intent myIntent = new Intent(view.getContext(), ProductDetailActivity.class);
+        		startActivityForResult(myIntent, 0);
+        	}
+        });
     }
-    
+
+    // Based on: http://www.vogella.de/articles/AndroidListView/article.html
     private void populateCategoriesList() {
     	String[] values = new String[] { "Pečivo", "Mléčné výrobky" };
 
