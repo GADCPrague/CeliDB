@@ -8,24 +8,23 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
-public class CeliDBActivity extends Activity {
+public class CategoryListActivity extends Activity {
 	
-	private ListView mCategoriesList;
+	private ListView mCategoryList;
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.categories);
         
-        mCategoriesList = (ListView) findViewById(R.id.categoriesList);
+        mCategoryList = (ListView) findViewById(R.id.categoriesList);
         
         // Populate the contact list
         populateCategoriesList();
         
-        mCategoriesList.setOnItemClickListener(new OnItemClickListener() {
+        mCategoryList.setOnItemClickListener(new OnItemClickListener() {
         	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         		Intent myIntent = new Intent(view.getContext(), ProductDetailActivity.class);
         		startActivityForResult(myIntent, 0);
@@ -45,6 +44,6 @@ public class CeliDBActivity extends Activity {
     		android.R.layout.simple_list_item_1, android.R.id.text1, values);
 
     	// Assign adapter to ListView
-    	mCategoriesList.setAdapter(adapter);
+    	mCategoryList.setAdapter(adapter);
     }
 }
