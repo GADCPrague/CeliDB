@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="buttonLabelSearch">Naskenovat</string>
     <string name="labelCategories">Kategorie</string>
     <string name="labelDetail">Detail Produktu</string>
+    <string name="labelSearch">Vyhledávání</string>
     <string name="app_name">CeliDB</string>
 
 </resources>
