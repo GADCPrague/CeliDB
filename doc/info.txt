@@ -1,5 +1,6 @@
 Popis JSON zdrojù
 
+db: celidb
 user: celidb
 password: 6VnLDuLeZ6seCx4n
 
