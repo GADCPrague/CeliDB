@@ -1,5 +1,10 @@
 package gadcprague.fruits.celidb;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import gadcprague.fruits.celidb.data.Category;
+import gadcprague.fruits.celidb.data.Data;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,35 +30,58 @@ public class CategoryListActivity extends Activity {
         mLabel = (TextView) findViewById(R.id.label);
 
         Bundle extras = getIntent().getExtras();
-        final Integer categoryId = extras != null ? (Integer) extras.get("categoryId") : null;
-        final Boolean inRootCategory = categoryId == null;
+        final int categoryId = extras != null ? (Integer) extras.get("categoryId") : 0;
+        final Boolean inRootCategory = categoryId == 0;
 
         if (!inRootCategory)
         	mLabel.setText("Podkategorie " + categoryId);
 
         // Populate the contact list
-        populateCategoriesList();
+        populateCategoriesList(categoryId);
 
         mCategoryList.setOnItemClickListener(new OnItemClickListener() {
         	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         		if (inRootCategory) {
 	        		Intent myIntent = new Intent(view.getContext(), CategoryListActivity.class);
 	        		myIntent.putExtra("categoryId", position);
-	        		startActivity(myIntent);
+
+	        		// Create the view using Group's LocalActivityManager
+	        		View groupView = CategoriesActivityGroup.group.getLocalActivityManager()
+	        				.startActivity("detail", myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+	        				.getDecorView();
+
+	        		// Again, replace the view
+	        		CategoriesActivityGroup.group.replaceView(groupView);
         		} else {
 	        		Intent myIntent = new Intent(view.getContext(), ProductDetailActivity.class);
 	        		myIntent.putExtra("productId", 999);
-	        		startActivity(myIntent);
+
+	        		// Create the view using Group's LocalActivityManager
+	        		View groupView = CategoriesActivityGroup.group.getLocalActivityManager()
+	        				.startActivity("detail", myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+	        				.getDecorView();
+
+	        		// Again, replace the view
+	        		CategoriesActivityGroup.group.replaceView(groupView);
         		}
         	}
         });
     }
 
     // Based on: http://www.vogella.de/articles/AndroidListView/article.html
-    private void populateCategoriesList() {
-    	String[] values = new String[] { "Pečivo", "Mléčné výrobky" };
+    private void populateCategoriesList(int categoryId) {
+    	Data data = new Data();
 
-    	// First paramenter - Context
+    	List<Category> categories = data.getCategoriesWithParent(categoryId);
+
+//    	String[] values = new String[] { "Pečivo", "Mléčné výrobky" };
+    	ArrayList<String> values = new ArrayList<String>();
+
+    	for (Category c : categories) {
+    		values.add(c.getName());
+    	}
+
+    	// First parameter - Context
     	// Second parameter - Layout for the row
     	// Third parameter - ID of the View to which the data is written
     	// Forth - the Array of data
