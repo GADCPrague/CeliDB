@@ -36,6 +36,12 @@ public class Data {
 	}
 	
 	public boolean synchronize() {
+		@SuppressWarnings("unchecked")
+		ArrayList<String> urlList = (ArrayList<String>) this.jsonUrlList.keySet();
+		for(int i = 0; i < urlList.size(); i++) {
+			this.fetchJsonFile(urlList.get(i));
+		}
+		
 		this.synchronizedData = this.parseJsonFiles();
 		return this.synchronizedData;
 	}
@@ -54,19 +60,13 @@ public class Data {
 	public HashMap<Integer, Product> getProductsInCategory(Integer categoryId) {
 		HashMap<Integer, Product> pList = new HashMap<Integer, Product>();
 	
-		/*ArrayList<Product> productList = this.products.values();
-		productList.
-		for(int i = 0; i < productKeys.size(); i++) {
-			productKeys.toString()
+		ArrayList<Product> productList = (ArrayList<Product>) this.products.values();
+		for(int i = 0; i < productList.size(); i++) {
+			if(productList.get(i).getCategoryList().contains(categoryId)) {
+				pList.put(productList.get(i).getId(), productList.get(i));
+			}
 		}
-		this.products.get(key)
-		
-		Iterator<Product> productListIterator = this.products.values().iterator();
-		Product product;
-		while(productListIterator.next() != null) {
-			productListIterator.
-		}*/
-		
+
 		return pList;
 	}
 	
@@ -234,6 +234,14 @@ public class Data {
 		} 
 	}
 	
+	/**
+	 * 
+	 * 
+	 * @param jArray
+	 * @param iterator
+	 * @param key
+	 * @return
+	 */
 	private String fetchJsonPropertyFromArray(JSONArray jArray, int iterator, String key) {
 		try {
 			if(jArray.getJSONObject(iterator).get(key) != null)
