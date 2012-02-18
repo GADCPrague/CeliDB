@@ -1,0 +1,9 @@
+Popis JSON zdrojù
+
+
+Základní URL
+http://vps.kemza.com/hackaton
+
+products.json
+product_categories.json
+product_parameters.json
