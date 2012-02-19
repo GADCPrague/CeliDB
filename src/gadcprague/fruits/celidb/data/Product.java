@@ -9,6 +9,7 @@ public class Product {
 	private int id = 0;
 	private String barCode = null;
 	private String name = null;
+	private String nameLower = null;
 	private String description = null;
 	private Integer status = 1;
 	private Date dateChange;
@@ -50,9 +51,15 @@ public class Product {
 		return name;
 	}
 
+	public String getNameLower() {
+		return nameLower;
+	}
+
 	public void setName(String name) {
 		this.name = name;
+		this.nameLower = name.toLowerCase();
 	}
+
 
 	public String getDescription() {
 		return description;

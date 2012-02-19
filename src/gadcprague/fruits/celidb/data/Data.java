@@ -89,7 +89,7 @@ public class Data {
 		// Search in barcode, name and parameters
 		String searchLower = search.toLowerCase();
 		for(Integer key : this.products.keySet()) {
-			if(this.products.get(key).getName().toLowerCase().contains(searchLower) ||
+			if(this.products.get(key).getNameLower().contains(searchLower) ||
 					this.products.get(key).getBarCode().contains(search))
 				pList.add(this.products.get(key));
 		}
