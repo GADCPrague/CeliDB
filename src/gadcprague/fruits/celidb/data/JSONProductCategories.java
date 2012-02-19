@@ -6,8 +6,6 @@ public class JSONProductCategories {
 	private ArrayList<JSONProductCategory> product_category_declaration;
 	private ArrayList<JSONProductCategoryData> product_category_data;
 
-
-
 	public JSONProductCategories() {
 		super();
 		// TODO Auto-generated constructor stub

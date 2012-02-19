@@ -29,16 +29,18 @@ public class Data {
 	/* Internal Data Structure */
 	private HashMap<Integer, Product> products = null;
 	private ArrayList<Category> categories = null;
+	private ArrayList<ProductParameter> productParameters = null;
 
 	/* Internal class use only */
 	private JSONProductCategories jpc = null;
+	private JSONProductParameters jpp = null;
 
 	private Data() {
 		super();
 
 		this.jsonUrlList = new HashMap<String, String>();
 		this.jsonUrlList.put("products", "http://vps.kemza.com/hackaton/products.php");
-		//this.jsonUrlList.put("product_parameters", "http://vps.kemza.com/hackaton/product_parameters.php");
+		this.jsonUrlList.put("product_parameters", "http://vps.kemza.com/hackaton/product_parameters.php");
 		this.jsonUrlList.put("product_categories", "http://vps.kemza.com/hackaton/product_categories.php");
 
 		this.jsonStringList = new HashMap<String, String>();
@@ -46,6 +48,7 @@ public class Data {
 
 		this.products = new HashMap<Integer, Product>();
 		this.categories = new ArrayList<Category>();
+		this.productParameters = new ArrayList<ProductParameter>();
 	}
 
 	public static Data getInstance() {
@@ -123,6 +126,21 @@ public class Data {
 		return categoryList;
 	}
 
+	public ArrayList<ProductParameter> getProductParameters() {
+		return productParameters;
+	}
+
+	public ProductParameter getProductParameter(Integer parameterId) {
+		for(int i = 0; i < this.productParameters.size(); i++)
+			if(this.productParameters.get(i).getId() == parameterId)
+				return this.productParameters.get(i);
+
+		return null;
+	}
+
+	//----------------------------------------------------------------------
+	// JSON Parsers
+	//----------------------------------------------------------------------
 	/**
 	 * Downloads JSON file and saves JSON string into jsonStrinList variable
 	 *
@@ -153,7 +171,7 @@ public class Data {
 			in.close();
 			this.jsonStringList.put(jsonUrlKey, jsonString);
 
-			System.out.println("fetchJsonFile("+jsonUrlKey+") OK");
+			//System.out.println("fetchJsonFile("+jsonUrlKey+") OK");
 			//System.out.println("fetchJsonFile("+jsonUrlKey+"), jsonString="+jsonString);
 
 		} catch (MalformedURLException e) {
@@ -181,13 +199,30 @@ public class Data {
 				this.parseJsonProducts(jsonString);
 			else if(key.equalsIgnoreCase("product_categories"))
 				this.parseJsonProductCategories(jsonString);
+			else if(key.equalsIgnoreCase("product_parameters"))
+				this.parseJsonProductParameters(jsonString);
 		}
 
 		this.fillCategories();
+		this.fillParameters();
 
 		return true;
 	}
 
+
+	private void parseJsonProductParameters(String jsonString) {
+		// TODO Auto-generated method stub
+		Type type = new TypeToken<JSONProductParameters>(){}.getType();
+		JSONProductParameters paramList = new Gson().fromJson(jsonString, type);
+
+		this.jpp = paramList;
+
+		for(int i = 0; i < paramList.getProduct_parameters().size(); i++) {
+			ProductParameter parameter = paramList.getProduct_parameters().get(i);
+			if(!parameter.getName().equalsIgnoreCase("0"))
+				this.productParameters.add(parameter);
+		}
+	}
 
 	/**
 	 * Parse json product categories
@@ -227,6 +262,10 @@ public class Data {
 
 	}
 
+	/**
+	 * Add categories to products
+	 * @return
+	 */
 	private boolean fillCategories() {
 		// Fill Product.categoryList
 		for(int i = 0; i < this.jpc.getProduct_category_data().size(); i++) {
@@ -238,6 +277,29 @@ public class Data {
 			if(this.products.containsKey(productId)) {
 				//System.out.println("pridavam produkt "+productId+" do kategorie "+categoryId);
 				this.products.get(productId).addCategory(categoryId);
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Add parameters to products
+	 *
+	 * @return
+	 */
+	private boolean fillParameters() {
+		if(this.jpp.getProduct_parameters_data() == null)
+			return false;
+
+		for(int i = 0; i < this.jpp.getProduct_parameters_data().size(); i++) {
+			Integer productId = this.jpp.getProduct_parameters_data().get(i).getProductId();
+			Integer parameterId = this.jpp.getProduct_parameters_data().get(i).getParameterId();
+			String value = this.jpp.getProduct_parameters_data().get(i).getValue();
+
+			if(this.products.containsKey(productId)) {
+				//System.out.println("productId="+productId+", parameterId="+parameterId+", value="+value);
+				this.products.get(productId).setParameter(parameterId, value);
 			}
 		}
 
