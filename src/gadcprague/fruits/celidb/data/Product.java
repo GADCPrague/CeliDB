@@ -7,10 +7,10 @@ import java.util.Set;
 
 public class Product {
 	private int id = 0;
-	private String barCode = null;
-	private String name = null;
-	private String nameLower = null;
-	private String description = null;
+	private String barCode = "";
+	private String name = "";
+	private String nameLower = "";
+	private String description = "";
 	private Integer status = 1;
 	private Date dateChange;
 	private String changeUser;
@@ -60,6 +60,9 @@ public class Product {
 		this.nameLower = name.toLowerCase();
 	}
 
+	public void setNameLower(String nameLower) {
+		this.nameLower = nameLower;
+	}
 
 	public String getDescription() {
 		return description;

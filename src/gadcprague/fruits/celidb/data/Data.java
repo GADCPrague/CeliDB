@@ -256,6 +256,7 @@ public class Data {
 		this.products = new HashMap<Integer, Product>();
 		for(Iterator<Product> i = pList.iterator(); i.hasNext();) {
 			Product p = i.next();
+			p.setNameLower(p.getName().toLowerCase());
 			this.products.put(p.getId(), p);
 		}
 
