@@ -30,7 +30,8 @@
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bílý chléb"
+                android:layout_weight="1"
+                android:text=""
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
         </TableRow>
@@ -51,7 +52,8 @@
                 android:id="@+id/textView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2 213 123 123 52"
+                android:layout_weight="1"
+                android:text=""
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
         </TableRow>
@@ -72,7 +74,8 @@
                 android:id="@+id/textView6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                android:layout_weight="1"
+                android:text=""
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
         </TableRow>
