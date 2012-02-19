@@ -67,7 +67,11 @@ public class Main extends TabActivity {
 
 			Log.d("CeliDB", "Barcode scanner returned " + scanResult);
 
-			searchActivity.onScanResult(scanResult);
+			if (searchActivity != null) {
+				searchActivity.onScanResult(scanResult);
+			} else {
+				Log.d("CeliDB", "Missing search activity ???!?!?!?");
+			}
 
 		} else if (resultCode == RESULT_CANCELED) {
 			Log.d("CeliDB", "result CANCELED");

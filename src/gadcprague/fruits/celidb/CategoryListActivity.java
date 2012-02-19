@@ -69,7 +69,7 @@ public class CategoryListActivity extends Activity {
 	        		// Again, replace the view
 	        		CategoriesActivityGroup.group.replaceView(groupView);
 
-        		} else {
+        		} else if (position >= productsStartAtIndex) {
         			// Clicked on a product
 	        		Intent myIntent = new Intent(view.getContext(), ProductDetailActivity.class);
 	        		myIntent.putExtra("productId", products.get(position - productsStartAtIndex).getId());
