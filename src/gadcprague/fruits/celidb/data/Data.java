@@ -87,9 +87,10 @@ public class Data {
 		ArrayList<Product> pList = new ArrayList<Product>();
 
 		// Search in barcode, name and parameters
+		String searchLower = search.toLowerCase();
 		for(Integer key : this.products.keySet()) {
-			if(this.products.get(key).getName().equalsIgnoreCase(search) ||
-					this.products.get(key).getBarCode().equalsIgnoreCase(search))
+			if(this.products.get(key).getName().toLowerCase().contains(searchLower) ||
+					this.products.get(key).getBarCode().contains(search))
 				pList.add(this.products.get(key));
 		}
 
