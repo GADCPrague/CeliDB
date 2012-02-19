@@ -21,7 +21,7 @@ public class SearchResultActivity extends Activity {
 	protected ListView mCategoryList;
 	protected TextView mLabel;
 
-	protected Data data = Data.getInstance();
+	protected Data data;
 
 	protected List<Product> products;
 
@@ -63,6 +63,8 @@ public class SearchResultActivity extends Activity {
 
     // Based on: http://www.vogella.de/articles/AndroidListView/article.html
     private void populateCategoriesList(String queryString) {
+    	if (data == null)
+    		data = Data.getInstance();
 
     	products = data.searchProduct(queryString);
 

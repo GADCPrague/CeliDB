@@ -22,7 +22,7 @@ public class CategoryListActivity extends Activity {
 	protected ListView mCategoryList;
 	protected TextView mLabel;
 
-	protected Data data = Data.getInstance();
+	protected Data data;
 
 	protected List<Category> categories;
 	protected List<Product> products;
@@ -88,6 +88,8 @@ public class CategoryListActivity extends Activity {
 
     // Based on: http://www.vogella.de/articles/AndroidListView/article.html
     private void populateCategoriesList(int categoryId) {
+    	if (data == null)
+    		data = Data.getInstance();
 
     	categories = data.getCategoriesWithParent(categoryId);
     	products = data.getProductsInCategory(categoryId);
