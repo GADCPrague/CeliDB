@@ -13,6 +13,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -35,12 +37,12 @@ public class Data {
 	private JSONProductCategories jpc = null;
 	private JSONProductParameters jpp = null;
 
-	private Data() {
+	public Data() {
 		super();
 
 		this.jsonUrlList = new HashMap<String, String>();
 		this.jsonUrlList.put("products", "http://vps.kemza.com/hackaton/products.php");
-		this.jsonUrlList.put("product_parameters", "http://vps.kemza.com/hackaton/product_parameters.php");
+		//this.jsonUrlList.put("product_parameters", "http://vps.kemza.com/hackaton/product_parameters.php");
 		this.jsonUrlList.put("product_categories", "http://vps.kemza.com/hackaton/product_categories.php");
 
 		this.jsonStringList = new HashMap<String, String>();
@@ -116,8 +118,10 @@ public class Data {
 	}
 
 	public ArrayList<Category> getCategoriesWithParent(int parentId) {
+		Log.d("CeliDB", "before sync");
 		if(!this.synchronizedData)
 			this.synchronize();
+		Log.d("CeliDB", "after sync");
 
 		ArrayList<Category> categoryList = new ArrayList<Category>();
 		for(int i = 0; i < this.categories.size(); i++)
@@ -189,7 +193,7 @@ public class Data {
 	}
 
 	private boolean parseJsonFiles() {
-		//System.out.println("parseJsonFiles()");
+		System.out.println("parseJsonFiles()");
 
 		//Set<String> keys = this.jsonStringList.keySet();
 		for(String key:this.jsonStringList.keySet()) {
@@ -200,12 +204,12 @@ public class Data {
 				this.parseJsonProducts(jsonString);
 			else if(key.equalsIgnoreCase("product_categories"))
 				this.parseJsonProductCategories(jsonString);
-			else if(key.equalsIgnoreCase("product_parameters"))
-				this.parseJsonProductParameters(jsonString);
+//			else if(key.equalsIgnoreCase("product_parameters"))
+//				this.parseJsonProductParameters(jsonString);
 		}
 
-		this.fillCategories();
-		this.fillParameters();
+		//this.fillCategories();
+		//this.fillParameters();
 
 		return true;
 	}

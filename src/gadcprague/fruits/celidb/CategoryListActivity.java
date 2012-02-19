@@ -10,6 +10,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -88,24 +89,40 @@ public class CategoryListActivity extends Activity {
 
     // Based on: http://www.vogella.de/articles/AndroidListView/article.html
     private void populateCategoriesList(int categoryId) {
-    	if (data == null)
-    		data = Data.getInstance();
+    	if (data == null) {
+        	Log.d("CeliDB", "before new on DATA");
+    		data = new Data();
+    		Log.d("CeliDB", "before new on DATA");
+    		data.synchronize();
+    		Log.d("CeliDB", "after synchronize");
+    	}
+
+    	Log.d("CeliDB", "start " + categoryId);
 
     	categories = data.getCategoriesWithParent(categoryId);
+
+    	Log.d("CeliDB", "in2");
     	products = data.getProductsInCategory(categoryId);
+    	Log.d("CeliDB", "in3");
 
     	ArrayList<String> values = new ArrayList<String>();
 
+    	Log.d("CeliDB", "in4");
     	for (Category c : categories) {
     		values.add(c.getName());
+    		Log.d("CeliDB", "inxxx");
     	}
 
+    	Log.d("CeliDB", "in5");
     	if (!categories.isEmpty() && !products.isEmpty()) {
     		values.add("Produkty:");
+    		Log.d("CeliDB", "inyyy");
     	}
 
+    	Log.d("CeliDB", "in6");
     	for (Product p : products) {
     		values.add(p.getName());
+    		Log.d("CeliDB", "inzzz");
     	}
 
     	// First parameter - Context
