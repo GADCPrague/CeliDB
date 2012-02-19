@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="buttonLabelSearch">Naskenovat</string>
+    <string name="buttonLabelSearch">Vyhledat</string>
+    <string name="buttonLabelScan">Naskenovat</string>
     <string name="labelCategories">Kategorie</string>
     <string name="labelDetail">Detail Produktu</string>
     <string name="labelSearch">Vyhledávání</string>
