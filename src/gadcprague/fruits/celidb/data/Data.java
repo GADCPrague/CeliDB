@@ -17,6 +17,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class Data {
+	/* Singleton */
+	private static Data instance;
+
 	/* JSON */
 	private HashMap<String, String> jsonUrlList = null;// = new HashMap<String, String>();
 	private HashMap<String, String> jsonStringList;
@@ -30,7 +33,7 @@ public class Data {
 	/* Internal class use only */
 	private JSONProductCategories jpc = null;
 
-	public Data() {
+	private Data() {
 		super();
 
 		this.jsonUrlList = new HashMap<String, String>();
@@ -43,6 +46,13 @@ public class Data {
 
 		this.products = new HashMap<Integer, Product>();
 		this.categories = new ArrayList<Category>();
+	}
+
+	public static Data getInstance() {
+		if(instance == null) {
+			instance = new Data();
+		}
+		return instance;
 	}
 
 	public boolean synchronize() {
@@ -68,6 +78,19 @@ public class Data {
 			this.synchronize();
 
 		return products;
+	}
+
+	public ArrayList<Product> searchProduct(String search) {
+		ArrayList<Product> pList = new ArrayList<Product>();
+
+		// Search in barcode, name and parameters
+		for(Integer key : this.products.keySet()) {
+			if(this.products.get(key).getName().equalsIgnoreCase(search) ||
+					this.products.get(key).getBarCode().equalsIgnoreCase(search))
+				pList.add(this.products.get(key));
+		}
+
+		return pList;
 	}
 
 	public ArrayList<Product> getProductsInCategory(Integer categoryId) {
