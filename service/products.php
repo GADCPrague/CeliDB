@@ -18,18 +18,19 @@ echo '
   /* echo $query;*/
   $Sql_result = MySQL_Query($query);
 
-  echo  '
-{
-  "products": [';  
+  echo  '';
+  //echo  '{';
+echo  '[';  
+  //echo  '  "products": [';  
   while ($record = MySQL_Fetch_Array($Sql_result)):
-    echo  '{ "id":'.$record['product_id'].', "barcode":"'.$record['product_barcode'].'", "name":"'.$record['product_name'].'", "description":"'.$record['product_description'].'", "status":"'.$record['product_status'].'", "change_date":"'.$record['product_change_date'].'", "change_user":"'.$record['product_user'].'"},'."\n";
+    echo  '{ "id":'.$record['product_id'].', "barCode":"'.$record['product_barcode'].'", "name":"'.$record['product_name'].'", "description":"'.$record['product_description'].'", "status":"'.$record['product_status'].'", "changeDate":"'.$record['product_change_date'].'", "changeUser":"'.$record['product_user'].'"},'."\n";
     $i++;
   endwhile;
-  echo  '{ "id":"'.$record['product_id'].'", "barcode":"'.$record['product_barcode'].'", "name":"'.$record['product_name'].'", "description":"'.$record['product_description'].'", "status":"'.$record['product_status'].'", "change_date":"'.$record['product_change_date'].'", "change_user":"'.$record['product_user'].'"}'."\n";
+  echo  '{ "id":"'.$record['product_id'].'0", "barCode":"'.$record['product_barcode'].'0", "name":"'.$record['product_name'].'0", "description":"'.$record['product_description'].'0", "status":"'.$record['product_status'].'0", "changeDate":"'.$record['product_change_date'].'0", "changeUser":"'.$record['product_user'].'0"}'."\n";
 
-echo '     
-  ]
-} 
-';
+echo '';     
+echo '  ]';
+//echo '}'; 
+echo '';
   MySQL_FreeResult($Sql_result);
 ?>
