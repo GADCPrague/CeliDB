@@ -51,12 +51,12 @@ public class SearchResultActivity extends Activity {
         		myIntent.putExtra("productId", products.get(position).getId());
 
         		// Create the view using Group's LocalActivityManager
-        		View groupView = CategoriesActivityGroup.group.getLocalActivityManager()
-        				.startActivity("detail", myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+        		View groupView = SearchActivityGroup.group.getLocalActivityManager()
+        				.startActivity("detail-from-search", myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
         				.getDecorView();
 
         		// Again, replace the view
-        		CategoriesActivityGroup.group.replaceView(groupView);
+        		SearchActivityGroup.group.replaceView(groupView);
         	}
         });
     }
