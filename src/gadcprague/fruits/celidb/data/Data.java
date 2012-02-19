@@ -13,6 +13,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -29,11 +31,13 @@ public class Data {
 	/* Internal Data Structure */
 	private HashMap<Integer, Product> products = null;
 	private ArrayList<Category> categories = null;
+	private ArrayList<ProductParameter> productParameters = null;
 
 	/* Internal class use only */
 	private JSONProductCategories jpc = null;
+	private JSONProductParameters jpp = null;
 
-	private Data() {
+	public Data() {
 		super();
 
 		this.jsonUrlList = new HashMap<String, String>();
@@ -46,6 +50,7 @@ public class Data {
 
 		this.products = new HashMap<Integer, Product>();
 		this.categories = new ArrayList<Category>();
+		this.productParameters = new ArrayList<ProductParameter>();
 	}
 
 	public static Data getInstance() {
@@ -84,9 +89,10 @@ public class Data {
 		ArrayList<Product> pList = new ArrayList<Product>();
 
 		// Search in barcode, name and parameters
+		String searchLower = search.toLowerCase();
 		for(Integer key : this.products.keySet()) {
-			if(this.products.get(key).getName().equalsIgnoreCase(search) ||
-					this.products.get(key).getBarCode().equalsIgnoreCase(search))
+			if(this.products.get(key).getNameLower().contains(searchLower) ||
+					this.products.get(key).getBarCode().contains(search))
 				pList.add(this.products.get(key));
 		}
 
@@ -112,8 +118,10 @@ public class Data {
 	}
 
 	public ArrayList<Category> getCategoriesWithParent(int parentId) {
+		Log.d("CeliDB", "before sync");
 		if(!this.synchronizedData)
 			this.synchronize();
+		Log.d("CeliDB", "after sync");
 
 		ArrayList<Category> categoryList = new ArrayList<Category>();
 		for(int i = 0; i < this.categories.size(); i++)
@@ -123,6 +131,21 @@ public class Data {
 		return categoryList;
 	}
 
+	public ArrayList<ProductParameter> getProductParameters() {
+		return productParameters;
+	}
+
+	public ProductParameter getProductParameter(Integer parameterId) {
+		for(int i = 0; i < this.productParameters.size(); i++)
+			if(this.productParameters.get(i).getId() == parameterId)
+				return this.productParameters.get(i);
+
+		return null;
+	}
+
+	//----------------------------------------------------------------------
+	// JSON Parsers
+	//----------------------------------------------------------------------
 	/**
 	 * Downloads JSON file and saves JSON string into jsonStrinList variable
 	 *
@@ -153,7 +176,7 @@ public class Data {
 			in.close();
 			this.jsonStringList.put(jsonUrlKey, jsonString);
 
-			System.out.println("fetchJsonFile("+jsonUrlKey+") OK");
+			//System.out.println("fetchJsonFile("+jsonUrlKey+") OK");
 			//System.out.println("fetchJsonFile("+jsonUrlKey+"), jsonString="+jsonString);
 
 		} catch (MalformedURLException e) {
@@ -170,7 +193,7 @@ public class Data {
 	}
 
 	private boolean parseJsonFiles() {
-		//System.out.println("parseJsonFiles()");
+		System.out.println("parseJsonFiles()");
 
 		//Set<String> keys = this.jsonStringList.keySet();
 		for(String key:this.jsonStringList.keySet()) {
@@ -181,13 +204,30 @@ public class Data {
 				this.parseJsonProducts(jsonString);
 			else if(key.equalsIgnoreCase("product_categories"))
 				this.parseJsonProductCategories(jsonString);
+//			else if(key.equalsIgnoreCase("product_parameters"))
+//				this.parseJsonProductParameters(jsonString);
 		}
 
-		this.fillCategories();
+		//this.fillCategories();
+		//this.fillParameters();
 
 		return true;
 	}
 
+
+	private void parseJsonProductParameters(String jsonString) {
+		// TODO Auto-generated method stub
+		Type type = new TypeToken<JSONProductParameters>(){}.getType();
+		JSONProductParameters paramList = new Gson().fromJson(jsonString, type);
+
+		this.jpp = paramList;
+
+		for(int i = 0; i < paramList.getProduct_parameters().size(); i++) {
+			ProductParameter parameter = paramList.getProduct_parameters().get(i);
+			if(!parameter.getName().equalsIgnoreCase("0"))
+				this.productParameters.add(parameter);
+		}
+	}
 
 	/**
 	 * Parse json product categories
@@ -220,6 +260,7 @@ public class Data {
 		this.products = new HashMap<Integer, Product>();
 		for(Iterator<Product> i = pList.iterator(); i.hasNext();) {
 			Product p = i.next();
+			p.setNameLower(p.getName().toLowerCase());
 			this.products.put(p.getId(), p);
 		}
 
@@ -227,6 +268,10 @@ public class Data {
 
 	}
 
+	/**
+	 * Add categories to products
+	 * @return
+	 */
 	private boolean fillCategories() {
 		// Fill Product.categoryList
 		for(int i = 0; i < this.jpc.getProduct_category_data().size(); i++) {
@@ -238,6 +283,29 @@ public class Data {
 			if(this.products.containsKey(productId)) {
 				//System.out.println("pridavam produkt "+productId+" do kategorie "+categoryId);
 				this.products.get(productId).addCategory(categoryId);
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Add parameters to products
+	 *
+	 * @return
+	 */
+	private boolean fillParameters() {
+		if(this.jpp.getProduct_parameters_data() == null)
+			return false;
+
+		for(int i = 0; i < this.jpp.getProduct_parameters_data().size(); i++) {
+			Integer productId = this.jpp.getProduct_parameters_data().get(i).getProductId();
+			Integer parameterId = this.jpp.getProduct_parameters_data().get(i).getParameterId();
+			String value = this.jpp.getProduct_parameters_data().get(i).getValue();
+
+			if(this.products.containsKey(productId)) {
+				//System.out.println("productId="+productId+", parameterId="+parameterId+", value="+value);
+				this.products.get(productId).setParameter(parameterId, value);
 			}
 		}
 

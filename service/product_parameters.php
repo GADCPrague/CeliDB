@@ -36,7 +36,7 @@ echo '
     echo  '{ "id":4, "name":"Výrobce", "description":"Výrobce produktu", "type":"REAL", "required":1},'."\n";
     $i++;
   endwhile;
-    echo  '{ "id":"", "name":"", "description":"", "type":"", "required":""}'."\n";
+    echo  '{ "id":"0", "name":"0", "description":"0", "type":"0", "required":"0"}'."\n";
   MySQL_FreeResult($Sql_result); 
   
   $query = 'Select id as id, product_id as product_id, product_parameter_id as product_parameter_id, value as product_value from `PRODUCT_PROPERTIES` PP';
@@ -51,7 +51,7 @@ echo '
     echo  '{ "productId":"'.$record['product_id'].'", "parameterId":"'.$record['product_parameter_id'].'", "value":"'.$record['product_value'].'"},'."\n";
     $i++;
   endwhile;
-  echo  '{ "productId":"", "parameterId":"", "value":""}'."\n";
+  echo  '{ "productId":"0", "parameterId":"0", "value":"0"}'."\n";
   echo '     
     ]    
 }

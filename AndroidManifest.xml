@@ -26,6 +26,7 @@
         <activity android:name=".UploadActivityGroup"></activity>
         
         <activity android:name=".SearchActivity"></activity>
+        <activity android:name=".SearchResultActivity"></activity>
         
         <activity android:name=".CategoryListActivity"></activity>
         <activity android:name=".ProductDetailActivity"></activity>

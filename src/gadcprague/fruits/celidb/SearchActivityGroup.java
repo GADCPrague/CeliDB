@@ -21,7 +21,7 @@ public class SearchActivityGroup extends ActivityGroup {
 	      group = this;
 
 	      // Start the root activity within the group and get its view
-	      View view = getLocalActivityManager().startActivity("UploadActivity",
+	      View view = getLocalActivityManager().startActivity("SearchActivity",
 	    		  new Intent(this, SearchActivity.class)
 	      				.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
 	      				.getDecorView();
@@ -48,7 +48,7 @@ public class SearchActivityGroup extends ActivityGroup {
 
    @Override
     public void onBackPressed() {
-    	CategoriesActivityGroup.group.back();
+    	SearchActivityGroup.group.back();
         return;
     }
 

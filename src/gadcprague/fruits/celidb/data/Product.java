@@ -2,17 +2,25 @@ package gadcprague.fruits.celidb.data;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Set;
 
 public class Product {
 	private int id = 0;
-	private String barCode = null;
-	private String name = null;
-	private String description = null;
+	private String barCode = "";
+	private String name = "";
+	private String nameLower = "";
+	private String description = "";
 	private Integer status = 1;
 	private Date dateChange;
 	private String changeUser;
 
 	private ArrayList<Integer> categoryList = new ArrayList<Integer>();
+	/**
+	 * Integer - parameterId
+	 * String - value
+	 */
+	private HashMap<Integer, String> parameterList = new HashMap<Integer, String>();
 
 	public Product() {
 		super();
@@ -43,8 +51,17 @@ public class Product {
 		return name;
 	}
 
+	public String getNameLower() {
+		return nameLower;
+	}
+
 	public void setName(String name) {
 		this.name = name;
+		this.nameLower = name.toLowerCase();
+	}
+
+	public void setNameLower(String nameLower) {
+		this.nameLower = nameLower;
 	}
 
 	public String getDescription() {
@@ -81,6 +98,22 @@ public class Product {
 
 	public ArrayList<Integer> getCategoryList() {
 		return categoryList;
+	}
+
+	public String getParameter(Integer parameterId) {
+		return this.parameterList.get(parameterId);
+	}
+
+	public void setParameter(Integer parameterId, String value) {
+		Set<Integer> paramIdList = this.parameterList.keySet();
+		if(paramIdList.contains(parameterId))
+			;//this.parameterList.
+		else
+			this.parameterList.put(parameterId, value);
+	}
+
+	public HashMap<Integer, String> getParameters() {
+		return parameterList;
 	}
 
 	public void addCategory(Integer categoryId) {

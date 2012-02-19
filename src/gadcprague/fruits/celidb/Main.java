@@ -26,7 +26,7 @@ public class Main extends TabActivity {
 	    // Create an Intent to launch an Activity for the tab (to be reused)
 	    // and Initialize a TabSpec for each tab and add it to the TabHost
 	    intent = new Intent().setClass(this, SearchActivityGroup.class);
-	    spec = tabHost.newTabSpec("artists").setIndicator("Vyhledat",
+	    spec = tabHost.newTabSpec("search").setIndicator("Vyhledat",
 	                      res.getDrawable(R.drawable.ic_action_search))
 	                  .setContent(intent);
 	    tabHost.addTab(spec);
@@ -39,7 +39,7 @@ public class Main extends TabActivity {
 	    tabHost.addTab(spec);
 
 	    intent = new Intent().setClass(this, UploadActivityGroup.class);
-	    spec = tabHost.newTabSpec("songs").setIndicator("Ukl‡dat",
+	    spec = tabHost.newTabSpec("upload").setIndicator("Ukl‡dat",
 	                      res.getDrawable(R.drawable.ic_action_edit))
 	                  .setContent(intent);
 	    tabHost.addTab(spec);
@@ -67,7 +67,11 @@ public class Main extends TabActivity {
 
 			Log.d("CeliDB", "Barcode scanner returned " + scanResult);
 
-			searchActivity.onScanResult(scanResult);
+			if (searchActivity != null) {
+				searchActivity.onScanResult(scanResult);
+			} else {
+				Log.d("CeliDB", "Missing search activity ???!?!?!?");
+			}
 
 		} else if (resultCode == RESULT_CANCELED) {
 			Log.d("CeliDB", "result CANCELED");

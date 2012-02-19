@@ -1,6 +1,7 @@
 package gadcprague.fruits.celidb;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.View;
@@ -24,6 +25,21 @@ public class SearchActivity extends Activity {
         mScanButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	Main.mainActivity.startScanner(SearchActivity.this);
+            }
+        });
+
+        mSearchButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+        		Intent myIntent = new Intent(v.getContext(), SearchResultActivity.class);
+        		myIntent.putExtra("queryString", mEditText.getText().toString());
+
+        		// Create the view using Group's LocalActivityManager
+        		View groupView = SearchActivityGroup.group.getLocalActivityManager()
+        				.startActivity("detail2", myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+        				.getDecorView();
+
+        		// Again, replace the view
+        		SearchActivityGroup.group.replaceView(groupView);
             }
         });
 	}
