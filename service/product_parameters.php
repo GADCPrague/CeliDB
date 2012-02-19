@@ -46,10 +46,10 @@ echo '
     "product_parameters_data": [
   ';
   while ($record = MySQL_Fetch_Array($Sql_result)):
-    echo  '{ "product_id":"'.$record['product_id'].'", "parameter_id":"'.$record['product_prameter_id'].'", "value":"'.$record['product_value'].'"},'."\n";
+    echo  '{ "productId":"'.$record['product_id'].'", "parameterId":"'.$record['product_prameter_id'].'", "value":"'.$record['product_value'].'"},'."\n";
     $i++;
   endwhile;
-  echo  '{ "product_id":"", "parameter_id":"", "value":""}'."\n";
+  echo  '{ "productId":"", "parameterId":"", "value":""}'."\n";
   echo '     
     ]
    } ]     
