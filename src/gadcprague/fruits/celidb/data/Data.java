@@ -1,18 +1,20 @@
 package gadcprague.fruits.celidb.data;
 
-import java.io.DataInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 public class Data {
 	/* JSON */
@@ -30,11 +32,14 @@ public class Data {
 		super();
 
 		this.jsonUrlList = new HashMap<String, String>();
-		this.jsonUrlList.put("products", "http://vps.kemza.com/hackaton/products.json");
-		this.jsonUrlList.put("product_parameters", "http://vps.kemza.com/hackaton/product_parameters.json");
-		this.jsonUrlList.put("product_categories", "http://vps.kemza.com/hackaton/product_categories.json");
+		//this.jsonUrlList.put("products", "http://vps.kemza.com/hackaton/products.php");
+		//this.jsonUrlList.put("product_parameters", "http://vps.kemza.com/hackaton/product_parameters.php");
+		this.jsonUrlList.put("product_categories", "http://vps.kemza.com/hackaton/product_categories.php");
 
 		this.jsonStringList = new HashMap<String, String>();
+		this.categories = new ArrayList<Category>();
+
+		this.products = new HashMap<Integer, Product>();
 		this.categories = new ArrayList<Category>();
 	}
 
@@ -106,18 +111,23 @@ public class Data {
 			String jsonString = new String("");
 
 			URL url = new URL(this.jsonUrlList.get(jsonUrlKey));
+			System.out.println("fetchJsonFile("+jsonUrlKey+"), URL: "+this.jsonUrlList.get(jsonUrlKey));
 			URLConnection urlConn = url.openConnection();
 			urlConn.setUseCaches(false);
 
-			DataInputStream dis = new DataInputStream(urlConn.getInputStream());
+			BufferedReader in = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
 
-			while ((line = dis.readLine()) != null)
+			while ((line = in.readLine()) != null)
 		    {
-				jsonString.concat(line);
+				//System.out.println(line);
+				jsonString = jsonString.concat(line);
 		    }
 
-			dis.close();
+			in.close();
 			this.jsonStringList.put(jsonUrlKey, jsonString);
+
+			System.out.println("fetchJsonFile("+jsonUrlKey+") OK");
+			//System.out.println("fetchJsonFile("+jsonUrlKey+"), jsonString="+jsonString);
 
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
@@ -133,49 +143,66 @@ public class Data {
 	}
 
 	private boolean parseJsonFiles() {
-		Set<String> keys = this.jsonStringList.keySet();
-		for(int i = 0; i < keys.size(); i++) {
-			this.parseJsonFile(keys.toString());
+		System.out.println("parseJsonFiles()");
+
+		//Set<String> keys = this.jsonStringList.keySet();
+		for(String key:this.jsonStringList.keySet()) {
+			//this.parseJsonFile(key);
+			String jsonString = this.jsonStringList.get(key).toString();
+
+			if(key.equalsIgnoreCase("products"))
+				this.parseJsonProducts(jsonString);
+			else if(key.equalsIgnoreCase("product_categories"))
+				this.parseJsonProductCategories(jsonString);
 		}
+		/*for(int i = 0; i < keys.size(); i++) {
+			this.parseJsonFile(keys.toString());
+		}*/
 
 		return true;
 	}
 
-	private boolean parseJsonFile(String jsonKey) {
-		JSONObject jObject;
-		try {
-			jObject = new JSONObject(this.jsonStringList.get(jsonKey));
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
-
-		if(jsonKey.equalsIgnoreCase("products"))
-			return this.parseJsonProducts(jObject);
-		else if(jsonKey.equalsIgnoreCase("product_categories")) {
-			return this.parseJsonProductCategories(jObject);
-		}
-
-		return false;
-	}
 
 	/**
-	 * Parse json categories
+	 * Parse json product categories
 	 *
 	 * @param jObject
 	 * @return
 	 */
-	private boolean parseJsonProductCategories(JSONObject jObject) {
-		try {
-			JSONObject pcObject = jObject.getJSONObject("product_categories");
+	private boolean parseJsonProductCategories(String jsonString) {
+		Type type = new TypeToken<JSONProductCategories>(){}.getType();
+		JSONProductCategories catList = new Gson().fromJson(jsonString, type);
+
+		// Fill Product.categoryList
+		for(int i = 0; i < catList.getProduct_category_data().size(); i++) {
+			//System.out.println("id="+catList.getProduct_category_data().get(i).getId());
+
+			Integer productId = catList.getProduct_category_data().get(i).getProductId();
+			Integer categoryId = catList.getProduct_category_data().get(i).getCategoryId();
+
+			if(this.products.containsKey(productId) && this.products.get(productId) != null) {
+				this.products.get(productId).addCategory(categoryId);
+			}
+		}
+
+		for(int i = 0; i < catList.getProduct_category_declaration().size(); i++) {
+			Category category = new Category(catList.getProduct_category_declaration().get(i).getId());
+			category.setName(catList.getProduct_category_declaration().get(i).getName());
+			category.setParentId(catList.getProduct_category_declaration().get(i).getParentId());
+
+			this.categories.add(category);
+		}
+
+			//JSONArray pcObject = jObject.getJSONArray("product_categories");
+
 
 			// productsArray obsahuje "product_category_declaration" a "product_category_data"
-			JSONArray pcDeclaration = pcObject.getJSONArray("product_category_declaration");
-			JSONArray pcData = pcObject.getJSONArray("product_category_data");
+			//JSONArray pcDeclaration = pcObject.get(0);
+			//JSONArray pcDeclaration = pcObject.getJSONArray("product_category_declaration");
+			//JSONArray pcData = pcObject.getJSONArray("product_category_data");
 
 			// Parsing product_category_declaration
-			for(int i = 0; i > pcDeclaration.length(); i++) {
+			/*for(int i = 0; i > pcDeclaration.length(); i++) {
 				Category category = new Category();
 
 				category.setId(Integer.parseInt(this.fetchJsonPropertyFromArray(pcDeclaration, i, "id")));
@@ -197,64 +224,23 @@ public class Data {
 				// Pridani kategorie k produktu
 				if(this.products.containsKey(productId))
 					this.products.get(productId).addCategory(categoryId);
-			}
+			}*/
 
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
-
-		return false;
+		return true;
 	}
 
-	private boolean parseJsonProducts(JSONObject jObject) {
-		try {
-			JSONArray productsArray = jObject.getJSONArray("products");
-			this.products = new HashMap<Integer, Product>();
+	private boolean parseJsonProducts(String jsonString) {
 
-			// Going trhrough all products
-			for(int i = 0; i < productsArray.length(); i++) {
-				// Parse product parameters
-				Product product = new Product();
-				/*if(productsArray.getJSONObject(i).get("id") != null) {
-					product.setId(Integer.parseInt(productsArray.getJSONObject(i).get("id").toString()));
-				}*/
-				product.setId(Integer.parseInt(this.fetchJsonPropertyFromArray(productsArray, i, "id")));
-				product.setBarCode(this.fetchJsonPropertyFromArray(productsArray, i, "barcode"));
-				product.setName(this.fetchJsonPropertyFromArray(productsArray, i, "name"));
-				product.setDateChange(Date.valueOf(this.fetchJsonPropertyFromArray(productsArray, i, "id")));
+		Type type = new TypeToken<List<Product>>(){}.getType();
+		List<Product> pList = new Gson().fromJson(jsonString, type);
 
-				// Dodat dalsi polozky
-
-				this.products.put(product.getId(), product);
-			}
-
-			return true;
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
+		this.products = new HashMap<Integer, Product>();
+		for(Iterator<Product> i = pList.iterator(); i.hasNext();) {
+			Product p = i.next();
+			this.products.put(p.getId(), p);
 		}
-	}
 
-	/**
-	 *
-	 *
-	 * @param jArray
-	 * @param iterator
-	 * @param key
-	 * @return
-	 */
-	private String fetchJsonPropertyFromArray(JSONArray jArray, int iterator, String key) {
-		try {
-			if(jArray.getJSONObject(iterator).get(key) != null)
-				return jArray.getJSONObject(iterator).get(key).toString();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-		return null;
+		return true;
+
 	}
 }
