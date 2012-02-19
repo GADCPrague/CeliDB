@@ -27,20 +27,20 @@ public class Main extends TabActivity {
 	    // and Initialize a TabSpec for each tab and add it to the TabHost
 	    intent = new Intent().setClass(this, SearchActivityGroup.class);
 	    spec = tabHost.newTabSpec("artists").setIndicator("Vyhledat",
-	                      res.getDrawable(R.drawable.ic_tab_artists))
+	                      res.getDrawable(R.drawable.ic_action_search))
 	                  .setContent(intent);
 	    tabHost.addTab(spec);
 
 	    // Do the same for the other tabs
 	    intent = new Intent().setClass(this, CategoriesActivityGroup.class);
 	    spec = tabHost.newTabSpec("categories").setIndicator("Kategorie",
-	                      res.getDrawable(R.drawable.ic_tab_artists))
+	                      res.getDrawable(R.drawable.ic_action_category))
 	                  .setContent(intent);
 	    tabHost.addTab(spec);
 
 	    intent = new Intent().setClass(this, UploadActivityGroup.class);
 	    spec = tabHost.newTabSpec("songs").setIndicator("Ukl‡dat",
-	                      res.getDrawable(R.drawable.ic_tab_artists))
+	                      res.getDrawable(R.drawable.ic_action_edit))
 	                  .setContent(intent);
 	    tabHost.addTab(spec);
 

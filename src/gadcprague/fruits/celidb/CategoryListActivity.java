@@ -1,10 +1,12 @@
 package gadcprague.fruits.celidb;
 
+import gadcprague.fruits.celidb.data.Category;
+import gadcprague.fruits.celidb.data.Data;
+import gadcprague.fruits.celidb.data.Product;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import gadcprague.fruits.celidb.data.Category;
-import gadcprague.fruits.celidb.data.Data;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,8 +19,14 @@ import android.widget.TextView;
 
 public class CategoryListActivity extends Activity {
 
-	private ListView mCategoryList;
-	private TextView mLabel;
+	protected ListView mCategoryList;
+	protected TextView mLabel;
+
+	protected Data data = Data.getInstance();
+
+	protected List<Category> categories;
+	protected List<Product> products;
+
 
     /** Called when the activity is first created. */
     @Override
@@ -31,19 +39,27 @@ public class CategoryListActivity extends Activity {
 
         Bundle extras = getIntent().getExtras();
         final int categoryId = extras != null ? (Integer) extras.get("categoryId") : 0;
-        final Boolean inRootCategory = categoryId == 0;
+        final String categoryName = extras != null ? (String) extras.get("categoryName") : null;
 
-        if (!inRootCategory)
-        	mLabel.setText("Podkategorie " + categoryId);
+        if (categoryName != null) {
+        	mLabel.setText(categoryName);
+        }
 
         // Populate the contact list
         populateCategoriesList(categoryId);
 
         mCategoryList.setOnItemClickListener(new OnItemClickListener() {
         	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        		if (inRootCategory) {
+        		int productsStartAtIndex = categories.size();
+            	if (!categories.isEmpty() && !products.isEmpty())
+            		productsStartAtIndex += 1;
+
+
+        		if (position < categories.size()) {
+        			// Clicked on a subcategory
 	        		Intent myIntent = new Intent(view.getContext(), CategoryListActivity.class);
-	        		myIntent.putExtra("categoryId", position);
+	        		myIntent.putExtra("categoryId", categories.get(position).getId());
+	        		myIntent.putExtra("categoryName", categories.get(position).getName());
 
 	        		// Create the view using Group's LocalActivityManager
 	        		View groupView = CategoriesActivityGroup.group.getLocalActivityManager()
@@ -52,9 +68,11 @@ public class CategoryListActivity extends Activity {
 
 	        		// Again, replace the view
 	        		CategoriesActivityGroup.group.replaceView(groupView);
+
         		} else {
+        			// Clicked on a product
 	        		Intent myIntent = new Intent(view.getContext(), ProductDetailActivity.class);
-	        		myIntent.putExtra("productId", 999);
+	        		myIntent.putExtra("productId", products.get(position - productsStartAtIndex).getId());
 
 	        		// Create the view using Group's LocalActivityManager
 	        		View groupView = CategoriesActivityGroup.group.getLocalActivityManager()
@@ -70,15 +88,22 @@ public class CategoryListActivity extends Activity {
 
     // Based on: http://www.vogella.de/articles/AndroidListView/article.html
     private void populateCategoriesList(int categoryId) {
-    	Data data = new Data();
 
-    	List<Category> categories = data.getCategoriesWithParent(categoryId);
+    	categories = data.getCategoriesWithParent(categoryId);
+    	products = data.getProductsInCategory(categoryId);
 
-//    	String[] values = new String[] { "Pečivo", "Mléčné výrobky" };
     	ArrayList<String> values = new ArrayList<String>();
 
     	for (Category c : categories) {
     		values.add(c.getName());
+    	}
+
+    	if (!categories.isEmpty() && !products.isEmpty()) {
+    		values.add("Produkty:");
+    	}
+
+    	for (Product p : products) {
+    		values.add(p.getName());
     	}
 
     	// First parameter - Context
