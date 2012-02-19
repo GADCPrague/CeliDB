@@ -11,13 +11,13 @@ public class Product {
 	private Integer status = 1;
 	private Date dateChange;
 	private String changeUser;
-	
-	private ArrayList<Integer> categoryList = null;
-	
+
+	private ArrayList<Integer> categoryList = new ArrayList<Integer>();
+
 	public Product() {
 		super();
 	}
-	
+
 	public Product(int id) {
 		super();
 		this.id = id;
@@ -86,7 +86,7 @@ public class Product {
 	public void addCategory(Integer categoryId) {
 		this.categoryList.add(categoryId);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -114,6 +114,6 @@ public class Product {
 		return "Product [id=" + id + ", barCode=" + barCode + ", name=" + name
 				+ ", description=" + description + "]";
 	}
-	
-	
+
+
 }

@@ -27,12 +27,14 @@ public class Data {
 	private HashMap<Integer, Product> products = null;
 	private ArrayList<Category> categories = null;
 
+	/* Internal class use only */
+	private JSONProductCategories jpc = null;
 
 	public Data() {
 		super();
 
 		this.jsonUrlList = new HashMap<String, String>();
-		//this.jsonUrlList.put("products", "http://vps.kemza.com/hackaton/products.php");
+		this.jsonUrlList.put("products", "http://vps.kemza.com/hackaton/products.php");
 		//this.jsonUrlList.put("product_parameters", "http://vps.kemza.com/hackaton/product_parameters.php");
 		this.jsonUrlList.put("product_categories", "http://vps.kemza.com/hackaton/product_categories.php");
 
@@ -57,6 +59,10 @@ public class Data {
 		return synchronizedData;
 	}
 
+	public Product getProduct(Integer productId) {
+		return this.products.containsKey(productId) ? this.products.get(productId) : null;
+	}
+
 	public HashMap<Integer, Product> getProducts() {
 		if(!this.synchronizedData)
 			this.synchronize();
@@ -64,14 +70,12 @@ public class Data {
 		return products;
 	}
 
-	public HashMap<Integer, Product> getProductsInCategory(Integer categoryId) {
-		HashMap<Integer, Product> pList = new HashMap<Integer, Product>();
+	public ArrayList<Product> getProductsInCategory(Integer categoryId) {
+		ArrayList<Product> pList = new ArrayList<Product>();
 
-		ArrayList<Product> productList = (ArrayList<Product>) this.products.values();
-		for(int i = 0; i < productList.size(); i++) {
-			if(productList.get(i).getCategoryList().contains(categoryId)) {
-				pList.put(productList.get(i).getId(), productList.get(i));
-			}
+		for(Integer key : this.products.keySet()) {
+			if(this.products.get(key).getCategoryList().contains(categoryId))
+				pList.add(this.products.get(key));
 		}
 
 		return pList;
@@ -143,7 +147,7 @@ public class Data {
 	}
 
 	private boolean parseJsonFiles() {
-		System.out.println("parseJsonFiles()");
+		//System.out.println("parseJsonFiles()");
 
 		//Set<String> keys = this.jsonStringList.keySet();
 		for(String key:this.jsonStringList.keySet()) {
@@ -155,9 +159,8 @@ public class Data {
 			else if(key.equalsIgnoreCase("product_categories"))
 				this.parseJsonProductCategories(jsonString);
 		}
-		/*for(int i = 0; i < keys.size(); i++) {
-			this.parseJsonFile(keys.toString());
-		}*/
+
+		this.fillCategories();
 
 		return true;
 	}
@@ -173,17 +176,7 @@ public class Data {
 		Type type = new TypeToken<JSONProductCategories>(){}.getType();
 		JSONProductCategories catList = new Gson().fromJson(jsonString, type);
 
-		// Fill Product.categoryList
-		for(int i = 0; i < catList.getProduct_category_data().size(); i++) {
-			//System.out.println("id="+catList.getProduct_category_data().get(i).getId());
-
-			Integer productId = catList.getProduct_category_data().get(i).getProductId();
-			Integer categoryId = catList.getProduct_category_data().get(i).getCategoryId();
-
-			if(this.products.containsKey(productId) && this.products.get(productId) != null) {
-				this.products.get(productId).addCategory(categoryId);
-			}
-		}
+		this.jpc = catList;
 
 		for(int i = 0; i < catList.getProduct_category_declaration().size(); i++) {
 			Category category = new Category(catList.getProduct_category_declaration().get(i).getId());
@@ -192,39 +185,6 @@ public class Data {
 
 			this.categories.add(category);
 		}
-
-			//JSONArray pcObject = jObject.getJSONArray("product_categories");
-
-
-			// productsArray obsahuje "product_category_declaration" a "product_category_data"
-			//JSONArray pcDeclaration = pcObject.get(0);
-			//JSONArray pcDeclaration = pcObject.getJSONArray("product_category_declaration");
-			//JSONArray pcData = pcObject.getJSONArray("product_category_data");
-
-			// Parsing product_category_declaration
-			/*for(int i = 0; i > pcDeclaration.length(); i++) {
-				Category category = new Category();
-
-				category.setId(Integer.parseInt(this.fetchJsonPropertyFromArray(pcDeclaration, i, "id")));
-				category.setName(this.fetchJsonPropertyFromArray(pcDeclaration, i, "id"));
-				category.setParentId(Integer.parseInt(this.fetchJsonPropertyFromArray(pcDeclaration, i, "id")));
-
-				this.categories.add(category);
-
-				// Pridani do seznamu podkategorii u parentCategory
-				if(category.getParentId() > 0);
-					this.categories.get(category.getParentId()).addSubCategory(category.getId());
-			}
-
-			// Parsing product_category_data
-			for(int i = 0; i < pcData.length(); i++) {
-				Integer categoryId = Integer.parseInt(this.fetchJsonPropertyFromArray(pcData, i, "category_id"));
-				Integer productId = Integer.parseInt(this.fetchJsonPropertyFromArray(pcData, i, "id"));
-
-				// Pridani kategorie k produktu
-				if(this.products.containsKey(productId))
-					this.products.get(productId).addCategory(categoryId);
-			}*/
 
 		return true;
 	}
@@ -242,5 +202,22 @@ public class Data {
 
 		return true;
 
+	}
+
+	private boolean fillCategories() {
+		// Fill Product.categoryList
+		for(int i = 0; i < this.jpc.getProduct_category_data().size(); i++) {
+			Integer productId = this.jpc.getProduct_category_data().get(i).getProductId();
+			Integer categoryId = this.jpc.getProduct_category_data().get(i).getCategoryId();
+
+			//System.out.println("product_id="+productId+", category_id="+categoryId);
+
+			if(this.products.containsKey(productId)) {
+				//System.out.println("pridavam produkt "+productId+" do kategorie "+categoryId);
+				this.products.get(productId).addCategory(categoryId);
+			}
+		}
+
+		return true;
 	}
 }
